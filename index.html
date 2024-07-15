@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4shared Search and Download</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .file {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .file a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .file a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>4shared Search and Download</h1>
+        <div class="search-box">
+            <input type="text" id="searchQuery" placeholder="Enter search term">
+            <select id="fileType">
+                <option value="">All Types</option>
+                <option value="document">Document</option>
+                <option value="audio">Audio</option>
+                <option value="video">Video</option>
+                <option value="image">Image</option>
+            </select>
+            <input type="text" id="specificUser" placeholder="Enter specific user">
+            <button onclick="searchFiles()">Search</button>
+        </div>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        async function searchFiles() {
+            const query = document.getElementById('searchQuery').value;
+            const fileType = document.getElementById('fileType').value;
+            const specificUser = document.getElementById('specificUser').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (!query) {
+                alert('Please enter a search term.');
+                return;
+            }
+
+            // Simulated API response (replace with actual API call in production)
+            const simulatedApiResponse = await mockSearch(query, fileType, specificUser);
+
+            if (simulatedApiResponse && simulatedApiResponse.files.length > 0) {
+                simulatedApiResponse.files.forEach(file => {
+                    const fileDiv = document.createElement('div');
+                    fileDiv.className = 'file';
+                    fileDiv.innerHTML = `
+                        <p><strong>${file.name}</strong></p>
+                        <p>Type: ${file.type}</p>
+                        <p><a href="${file.download_url}" target="_blank">Download</a></p>
+                    `;
+                    resultsDiv.appendChild(fileDiv);
+                });
+            } else {
+                resultsDiv.innerHTML = '<p>No results found.</p>';
+            }
+        }
+
+        // Simulated API function (replace with actual API call in production)
+        async function mockSearch(query, fileType, specificUser) {
+            // Simulated data - replace with actual API implementation
+            const files = [
+                { name: 'Document.pdf', type: 'document', download_url: 'https://example.com/document.pdf' },
+                { name: 'Music.mp3', type: 'audio', download_url: 'https://example.com/music.mp3' },
+                { name: 'Video.mp4', type: 'video', download_url: 'https://example.com/video.mp4' },
+                { name: 'Image.png', type: 'image', download_url: 'https://example.com/image.png' }
+            ];
+
+            // Simulated filtering based on fileType and specificUser
+            let filteredFiles = files.filter(file => {
+                let includeFile = true;
+                if (fileType && fileType !== '' && file.type !== fileType) {
+                    includeFile = false;
+                }
+                if (specificUser && specificUser !== '' && !file.name.toLowerCase().includes(specificUser.toLowerCase())) {
+                    includeFile = false;
+                }
+                return includeFile;
+            });
+
+            return { files: filteredFiles };
+        }
+    </script>
+</body>
+</html>
